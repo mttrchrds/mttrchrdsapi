@@ -34,6 +34,8 @@ if RENDER_EXTERNAL_HOSTNAME:
 # Application definition
 
 INSTALLED_APPS = [
+    'rest_framework',
+    'mttrchrdsapi',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -80,7 +82,7 @@ WSGI_APPLICATION = 'mttrchrdsapi.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         # Feel free to alter this value to suit your needs.
-        default='postgresql://postgres:postgres@localhost:5432/mttrchrdsapi',
+        default='postgresql://postgres:postgres@localhost:5432/matt',
         conn_max_age=600
     )
 }

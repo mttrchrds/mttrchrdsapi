@@ -16,7 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from mttrchrdsapi import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('shows/', views.show_list),
+    path('shows/<int:id>', views.show_detail),
 ]
