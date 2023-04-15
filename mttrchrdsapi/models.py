@@ -7,7 +7,7 @@ class BaseModel(models.Model):
 
 class ShowCreator(BaseModel):
     name = models.CharField(max_length=100)
-    image_url = models.CharField(max_length=2048, blank=True, null=True)
+    image = models.ImageField(upload_to='shows/creators/', null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -23,7 +23,7 @@ class ShowCategory(BaseModel):
 class Show(BaseModel):
     name = models.CharField(max_length=100)
     imdb_id = models.CharField(max_length=100, blank=True, null=True)
-    image_url = models.CharField(max_length=2048, blank=True, null=True)
+    image = models.ImageField(upload_to='shows/', null=True)
     creator = models.ForeignKey(
         ShowCreator,
         on_delete=models.SET_NULL,

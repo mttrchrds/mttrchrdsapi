@@ -1,5 +1,5 @@
-from .models import Show
-from .serializers import ShowSerializer
+from .models import Show, ShowCreator
+from .serializers import ShowSerializer, ShowCreatorSerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -18,4 +18,10 @@ def show_detail(request, id):
         return Response(status=status.HTTP_404_NOT_FOUND)
     
     serializer = ShowSerializer(show)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def show_creator_list(request):
+    showcreators = ShowCreator.objects.all()
+    serializer = ShowCreatorSerializer(showcreators, many=True)
     return Response(serializer.data)
