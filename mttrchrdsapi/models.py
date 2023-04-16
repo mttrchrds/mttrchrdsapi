@@ -91,5 +91,54 @@ class Game(BaseModel):
 
     def __str__(self):
         return self.name
-    
+
+class Activity(BaseModel):
+    start_at = models.DateField(null=False, blank=False)
+    end_at = models.DateField(null=True, blank=True)
+    completed = models.BooleanField(default=False)
+    show_activity = models.ForeignKey(
+        Show,
+        on_delete=models.SET_NULL,
+        related_name='activity',
+        related_query_name='activities',
+        null=True,
+        blank=True,
+    )
+    game_activity = models.ForeignKey(
+        Game,
+        on_delete=models.SET_NULL,
+        related_name='activity',
+        related_query_name='activities',
+        null=True,
+        blank=True,
+    )
+    show_platform = models.ForeignKey(
+        ShowPlatform,
+        on_delete=models.SET_NULL,
+        related_name='activity',
+        related_query_name='activities',
+        null=True,
+        blank=True,
+    )
+    game_platform = models.ForeignKey(
+        GamePlatform,
+        on_delete=models.SET_NULL,
+        related_name='activity',
+        related_query_name='activities',
+        null=True,
+        blank=True,
+    )
+
+    def __str__(self):
+        name = ''
+        if self.show_activity:
+            name = self.show_activity.name
+        if self.game_activity:
+            name = self.game_activity.name
+        platform = ''
+        if self.show_activity:
+            platform = self.show_platform.name
+        if self.game_activity:
+            platform = self.game_platform.name
+        return str(self.start_at) + ' ' + name +  ' (' + platform + ')'
 

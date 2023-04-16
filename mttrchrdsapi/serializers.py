@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Show, ShowCreator, ShowCategory, ShowPlatform, Game, GameCreator, GameCategory, GamePlatform
+from .models import Show, ShowCreator, ShowCategory, ShowPlatform, Game, GameCreator, GameCategory, GamePlatform, Activity
 from django.conf import settings
 
 class ShowPlatformSerializer(serializers.ModelSerializer):
@@ -100,3 +100,14 @@ class GameSerializer(serializers.ModelSerializer):
                 return settings.BASE_DOMAIN + obj.image.url
             return obj.image.url
         return ''
+    
+
+class ActivitySerializer(serializers.ModelSerializer):
+    show_activity = ShowSerializer(read_only=True)
+    show_platform = ShowPlatformSerializer(read_only=True)
+    game_activity = GameSerializer(read_only=True)
+    game_platform = GamePlatformSerializer(read_only=True)
+
+    class Meta:
+        model = Activity
+        fields = ['id', 'start_at', 'end_at', 'completed', 'show_activity', 'show_platform', 'game_activity', 'game_platform']

@@ -18,4 +18,6 @@ urlpatterns_endpoints = [
     path('game-platforms/<int:id>', views.game_platform_detail),
     path('game-categories/', views.game_category_list),
     path('game-categories/<int:id>', views.game_category_detail),
+    path('activities/', views.activity_list),
+    path('activities/<int:id>', views.activity_detail),
 ]

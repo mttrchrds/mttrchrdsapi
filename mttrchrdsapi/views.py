@@ -1,5 +1,5 @@
-from .models import Show, ShowCreator, ShowPlatform, ShowCategory, Game, GameCreator, GamePlatform, GameCategory
-from .serializers import ShowSerializer, ShowCreatorSerializer, ShowPlatformSerializer, ShowCategorySerializer, GameSerializer, GameCreatorSerializer, GamePlatformSerializer, GameCategorySerializer
+from .models import Show, ShowCreator, ShowPlatform, ShowCategory, Game, GameCreator, GamePlatform, GameCategory, Activity
+from .serializers import ShowSerializer, ShowCreatorSerializer, ShowPlatformSerializer, ShowCategorySerializer, GameSerializer, GameCreatorSerializer, GamePlatformSerializer, GameCategorySerializer, ActivitySerializer
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -130,4 +130,20 @@ def game_category_detail(request, id):
         return Response(status=status.HTTP_404_NOT_FOUND)
     
     serializer = GameCategorySerializer(game_category)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def activity_list(request):
+    activites = Activity.objects.all()
+    serializer = ActivitySerializer(activites, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def activity_detail(request, id):
+    try:
+       activity = Activity.objects.get(pk=id)
+    except Activity.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = ActivitySerializer(activity)
     return Response(serializer.data)
