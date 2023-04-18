@@ -34,6 +34,7 @@ if RENDER_EXTERNAL_HOSTNAME:
 # Application definition
 
 INSTALLED_APPS = [
+    'corsheaders',
     'storages',
     'rest_framework',
     'mttrchrdsapi',
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -158,4 +160,9 @@ if DEBUG:
 AWS_QUERYSTRING_AUTH = False
 
 AWS_STORAGE_BUCKET_NAME = "mttrchrdsapi"
+
+CORS_ALLOWED_ORIGINS = [
+    "https://www.mttrchrds.com",
+    "http://localhost:1234",
+]
 
