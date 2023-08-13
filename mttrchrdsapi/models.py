@@ -32,6 +32,7 @@ class Show(BaseModel):
     name = models.CharField(max_length=100)
     imdb_id = models.CharField(max_length=100, blank=True, null=True)
     image = models.ImageField(upload_to='shows/', null=True)
+    thumbnail = models.ImageField(upload_to='shows/thumbnails/', null=True)
     creator = models.ForeignKey(
         ShowCreator,
         on_delete=models.SET_NULL,
@@ -76,6 +77,7 @@ class Game(BaseModel):
     name = models.CharField(max_length=100)
     imdb_id = models.CharField(max_length=100, blank=True, null=True)
     image = models.ImageField(upload_to='games/', null=True)
+    thumbnail = models.ImageField(upload_to='games/thumbnails/', null=True)
     creator = models.ForeignKey(
         GameCreator,
         on_delete=models.SET_NULL,

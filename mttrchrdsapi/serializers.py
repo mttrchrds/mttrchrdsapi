@@ -39,16 +39,24 @@ class ShowSerializer(serializers.ModelSerializer):
     creator = ShowCreatorSerializer(read_only=True)
     categories = ShowCategorySerializer(read_only=True, many=True)
     image_url = serializers.SerializerMethodField()
+    thumbnail_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Show
-        fields = ['id', 'name', 'creator', 'imdb_id', 'image_url', 'categories']
+        fields = ['id', 'name', 'creator', 'imdb_id', 'image_url', 'thumbnail_url', 'categories']
 
     def get_image_url(self, obj):
         if obj.image:
             if settings.DEBUG:
                 return settings.BASE_DOMAIN + obj.image.url
             return obj.image.url
+        return ''
+    
+    def get_thumbnail_url(self, obj):
+        if obj.image:
+            if settings.DEBUG:
+                return settings.BASE_DOMAIN + obj.thumbnail.url
+            return obj.thumbnail.url
         return ''
     
 
@@ -89,16 +97,24 @@ class GameSerializer(serializers.ModelSerializer):
     creator = GameCreatorSerializer(read_only=True)
     categories = GameCategorySerializer(read_only=True, many=True)
     image_url = serializers.SerializerMethodField()
+    thumbnail_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Game
-        fields = ['id', 'name', 'creator', 'imdb_id', 'image_url', 'categories']
+        fields = ['id', 'name', 'creator', 'imdb_id', 'image_url', 'thumbnail_url', 'categories']
 
     def get_image_url(self, obj):
         if obj.image:
             if settings.DEBUG:
                 return settings.BASE_DOMAIN + obj.image.url
             return obj.image.url
+        return ''
+    
+    def get_thumbnail_url(self, obj):
+        if obj.image:
+            if settings.DEBUG:
+                return settings.BASE_DOMAIN + obj.thumbnail.url
+            return obj.thumbnail.url
         return ''
     
 
