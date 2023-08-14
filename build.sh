@@ -12,6 +12,7 @@ python -m poetry install
 
 python manage.py collectstatic --no-input
 python manage.py migrate
+python manage.py loaddata mttrchrdsapi/fixtures/initial_data.json
 
 if [[ $CREATE_SUPERUSER ]];
 then
