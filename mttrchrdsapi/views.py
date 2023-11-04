@@ -1,8 +1,10 @@
 from .models import Show, ShowCreator, ShowPlatform, ShowCategory, Game, GameCreator, GamePlatform, GameCategory, Activity
-from .serializers import ShowSerializer, ShowCreatorSerializer, ShowPlatformSerializer, ShowCategorySerializer, GameSerializer, GameCreatorSerializer, GamePlatformSerializer, GameCategorySerializer, ActivitySerializer
+
+from .serializers import ShowSerializer, ShowCreatorSerializer, ShowPlatformSerializer, ShowCategorySerializer, GameSerializer, GameCreatorSerializer, GamePlatformSerializer, GameCategorySerializer, ActivitySerializer, TimelineSerializer
+
+from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from rest_framework import status
 
 @api_view(['GET'])
 def show_list(request):
@@ -147,3 +149,21 @@ def activity_detail(request, id):
     
     serializer = ActivitySerializer(activity)
     return Response(serializer.data)
+
+@api_view(['GET'])
+def timeline_ongoing(request):
+    activities = Activity.objects.filter(end_at=None).order_by('-end_at')
+    serializer = TimelineSerializer(activities, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def timeline(request):
+    start_date = request.query_params.get('start', None)
+    end_date = request.query_params.get('end', None)
+    if not start_date or not end_date:
+        activities = Activity.objects.none()
+    else:
+        activities = Activity.objects.filter(end_at__gte=start_date, end_at__lte=end_date).order_by('-end_at')
+    serializer = TimelineSerializer(activities, many=True)
+    return Response(serializer.data)
+

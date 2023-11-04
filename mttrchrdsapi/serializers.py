@@ -127,3 +127,56 @@ class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
         fields = ['id', 'start_at', 'end_at', 'completed', 'show_activity', 'show_platform', 'game_activity', 'game_platform']
+
+
+class TimelineShowPlatformSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ShowPlatform
+        fields = ['id', 'name']
+
+
+class TimelineShowSerializer(serializers.ModelSerializer):
+    thumbnail_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Show
+        fields = ['id', 'name', 'thumbnail_url']
+    
+    def get_thumbnail_url(self, obj):
+        if obj.image:
+            if settings.DEBUG:
+                return settings.BASE_DOMAIN + obj.thumbnail.url
+            return obj.thumbnail.url
+        return ''
+
+
+class TimelineGamePlatformSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = GamePlatform
+        fields = ['id', 'name']
+
+
+class TimelineGameSerializer(serializers.ModelSerializer):
+    thumbnail_url = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Game
+        fields = ['id', 'name', 'thumbnail_url']
+    
+    def get_thumbnail_url(self, obj):
+        if obj.image:
+            if settings.DEBUG:
+                return settings.BASE_DOMAIN + obj.thumbnail.url
+            return obj.thumbnail.url
+        return ''
+
+
+class TimelineSerializer(serializers.ModelSerializer):
+    show_activity = TimelineShowSerializer(read_only=True)
+    show_platform = TimelineShowPlatformSerializer(read_only=True)
+    game_activity = TimelineGameSerializer(read_only=True)
+    game_platform = TimelineGamePlatformSerializer(read_only=True)
+
+    class Meta:
+        model = Activity
+        fields = ['id', 'start_at', 'end_at', 'completed', 'show_activity', 'show_platform', 'game_activity', 'game_platform']

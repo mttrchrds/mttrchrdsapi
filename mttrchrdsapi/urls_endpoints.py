@@ -20,4 +20,6 @@ urlpatterns_endpoints = [
     path('game-categories/<int:id>', views.game_category_detail),
     path('activities/', views.activity_list),
     path('activities/<int:id>', views.activity_detail),
+    path('timeline-ongoing/', views.timeline),
+    path('timeline/', views.timeline),
 ]
