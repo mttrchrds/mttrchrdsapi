@@ -152,7 +152,7 @@ def activity_detail(request, id):
 
 @api_view(['GET'])
 def timeline_ongoing(request):
-    activities = Activity.objects.filter(end_at=None).order_by('-end_at')
+    activities = Activity.objects.filter(end_at=None)
     serializer = TimelineSerializer(activities, many=True)
     return Response(serializer.data)
 
