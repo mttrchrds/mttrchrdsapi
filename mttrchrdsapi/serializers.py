@@ -171,7 +171,7 @@ class TimelineGameSerializer(serializers.ModelSerializer):
         return ''
 
 
-class TimelineSerializer(serializers.ModelSerializer):
+class TimelineActivitySerializer(serializers.ModelSerializer):
     show_activity = TimelineShowSerializer(read_only=True)
     show_platform = TimelineShowPlatformSerializer(read_only=True)
     game_activity = TimelineGameSerializer(read_only=True)
@@ -180,3 +180,12 @@ class TimelineSerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
         fields = ['id', 'start_at', 'end_at', 'completed', 'show_activity', 'show_platform', 'game_activity', 'game_platform']
+
+class TimelineSerializer(serializers.Serializer):
+    date = serializers.DateField()
+    day = serializers.CharField(max_length=100)
+    month = serializers.CharField(max_length=100)
+    year = serializers.CharField(max_length=100)
+    channels = serializers.ListField(
+        child=TimelineActivitySerializer(read_only=True)
+    )
