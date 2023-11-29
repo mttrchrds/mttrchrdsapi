@@ -162,6 +162,7 @@ def timeline_ongoing(request):
 def timeline(request):
     start_param = request.query_params.get('start', None)
     end_param = request.query_params.get('end', None)
+    channels_param = request.query_params.get('channels', None)
 
     start_date = datetime.strptime(start_param, '%Y-%m-%d').date()
     end_date = datetime.strptime(end_param, '%Y-%m-%d').date()
@@ -181,9 +182,23 @@ def timeline(request):
         None,
         None,
     ]
+
+    # if an existing channel list is active and passed as an argument, start channels from that point
+    if channels_param:
+        tmpChannels = []
+        existing_channels = channels_param.split(',')
+        for c in existing_channels:
+            #TODO refactor this to try/catch
+            if c:
+                tmpChannels.append(Activity.objects.get(id=c))
+            else:
+                tmpChannels.append(None)
+        channels = tmpChannels
+
     timeline_days = []
 
     for timeline_day in daterange(start_date, end_date):
+        # Prevents returning data beyond first ever activity
         if (timeline_day >= first_activity.start_at):
             # Clear channels when we are past their activities start date
             channel_indexes = []
