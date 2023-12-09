@@ -6,6 +6,8 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from datetime import date, timedelta, datetime
+
 @api_view(['GET'])
 def show_list(request):
     shows = Show.objects.all()
@@ -158,12 +160,82 @@ def timeline_ongoing(request):
 
 @api_view(['GET'])
 def timeline(request):
-    start_date = request.query_params.get('start', None)
-    end_date = request.query_params.get('end', None)
-    if not start_date or not end_date:
-        activities = Activity.objects.none()
-    else:
-        activities = Activity.objects.filter(end_at__gte=start_date, end_at__lte=end_date).order_by('-end_at')
-    serializer = TimelineSerializer(activities, many=True)
+    start_param = request.query_params.get('start', None)
+    end_param = request.query_params.get('end', None)
+    channels_param = request.query_params.get('channels', None)
+
+    start_date = datetime.strptime(start_param, '%Y-%m-%d').date()
+    end_date = datetime.strptime(end_param, '%Y-%m-%d').date()
+
+    first_activity = Activity.objects.order_by('start_at').first()
+
+    def daterange(start, end):
+        for n in range(int((end - start).days) + 1):
+            yield end - timedelta(n)
+
+    channels = [
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+        None,
+    ]
+
+    # if an existing channel list is active and passed as an argument, start channels from that point
+    if channels_param:
+        tmpChannels = []
+        existing_channels = channels_param.split(',')
+        for c in existing_channels:
+            #TODO refactor this to try/catch
+            if c:
+                tmpChannels.append(Activity.objects.get(id=c))
+            else:
+                tmpChannels.append(None)
+        channels = tmpChannels
+
+    timeline_days = []
+
+    for timeline_day in daterange(start_date, end_date):
+        # Prevents returning data beyond first ever activity
+        if (timeline_day >= first_activity.start_at):
+            # Clear channels when we are past their activities start date
+            channel_indexes = []
+            for idx, channel in enumerate(channels):
+                if channel:
+                    if channel.start_at == timeline_day + timedelta(1):
+                        channel_indexes.append(idx)
+            for channel_index in channel_indexes:
+                channels[channel_index] = None
+
+            # Assign today's activities to channels
+            if timeline_day == date.today():
+                today_activities = Activity.objects.filter(end_at=None)
+            else:
+                today_activities = Activity.objects.filter(end_at=timeline_day)
+
+            for today_activity in today_activities:
+                channel_index = channels.index(None)
+                channels[channel_index] = today_activity
+
+            timeline_days.append({
+                'date': timeline_day,
+                'day': timeline_day.strftime('%d'),
+                'month': timeline_day.strftime('%m'),
+                'year': timeline_day.strftime('%Y'),
+                'channels': [
+                    channels[0],
+                    channels[1],
+                    channels[2],
+                    channels[3],
+                    channels[4],
+                    channels[5],
+                    channels[6],
+                ],
+            })
+
+    serializer = TimelineSerializer(timeline_days, many=True)
+
     return Response(serializer.data)
 
