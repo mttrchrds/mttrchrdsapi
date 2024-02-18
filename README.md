@@ -7,6 +7,7 @@ API for mttrchrds.com
 
 Django commands:
 
+- poetry run ./manage.py createsuperuser (first time setup)
 - poetry update (installs dependencies)
 - poetry run ./manage.py runserver
 - poetry run ./manage.py makemigrations mttrchrdsapi
