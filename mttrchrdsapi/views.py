@@ -239,3 +239,24 @@ def timeline(request):
 
     return Response(serializer.data)
 
+@api_view(['GET'])
+def latest_shows(request):
+    ongoing_activities = Activity.objects.filter(end_at=None, show_activity__isnull=False)
+    if ongoing_activities.exists():
+        serializer = ActivitySerializer(ongoing_activities, many=True)
+        return Response(serializer.data)
+
+    latest_activity = Activity.objects.filter(show_activity__isnull=False).order_by('-end_at').first()
+    serializer = ActivitySerializer([latest_activity], many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def latest_games(request):
+    ongoing_activities = Activity.objects.filter(end_at=None, game_activity__isnull=False)
+    if ongoing_activities.exists():
+        serializer = ActivitySerializer(ongoing_activities, many=True)
+        return Response(serializer.data)
+
+    latest_activity = Activity.objects.filter(game_activity__isnull=False).order_by('-end_at').first()
+    serializer = ActivitySerializer([latest_activity], many=True)
+    return Response(serializer.data)
