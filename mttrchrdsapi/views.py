@@ -246,8 +246,8 @@ def latest_shows(request):
         serializer = ActivitySerializer(ongoing_activities, many=True)
         return Response(serializer.data)
 
-    latest_activity = Activity.objects.filter(show_activity__isnull=False).order_by('-end_at').first()
-    serializer = ActivitySerializer([latest_activity], many=True)
+    latest_activities = Activity.objects.filter(show_activity__isnull=False).order_by('-end_at')[:2]
+    serializer = ActivitySerializer([latest_activities], many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
@@ -257,6 +257,6 @@ def latest_games(request):
         serializer = ActivitySerializer(ongoing_activities, many=True)
         return Response(serializer.data)
 
-    latest_activity = Activity.objects.filter(game_activity__isnull=False).order_by('-end_at').first()
-    serializer = ActivitySerializer([latest_activity], many=True)
+    latest_activities = Activity.objects.filter(game_activity__isnull=False).order_by('-end_at')[:2]
+    serializer = ActivitySerializer(latest_activities, many=True)
     return Response(serializer.data)
