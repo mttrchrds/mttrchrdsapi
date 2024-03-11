@@ -247,7 +247,7 @@ def latest_shows(request):
         return Response(serializer.data)
 
     latest_activities = Activity.objects.filter(show_activity__isnull=False).order_by('-end_at')[:2]
-    serializer = ActivitySerializer([latest_activities], many=True)
+    serializer = ActivitySerializer(latest_activities, many=True)
     return Response(serializer.data)
 
 @api_view(['GET'])
