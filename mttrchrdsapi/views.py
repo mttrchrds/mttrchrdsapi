@@ -1,12 +1,10 @@
-from .models import Show, ShowCreator, ShowPlatform, ShowCategory, Game, GameCreator, GamePlatform, GameCategory, Activity
-
-from .serializers import ShowSerializer, ShowCreatorSerializer, ShowPlatformSerializer, ShowCategorySerializer, GameSerializer, GameCreatorSerializer, GamePlatformSerializer, GameCategorySerializer, ActivitySerializer, TimelineSerializer
-
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
 from datetime import date, timedelta, datetime
+
+from .models import Show, ShowCreator, ShowPlatform, ShowCategory, Game, GameCreator, GamePlatform, GameCategory, Activity
+from .serializers import ShowSerializer, ShowCreatorSerializer, ShowPlatformSerializer, ShowCategorySerializer, GameSerializer, GameCreatorSerializer, GamePlatformSerializer, GameCategorySerializer, ActivitySerializer, TimelineSerializer
 
 @api_view(['GET'])
 def show_list(request):
@@ -162,7 +160,7 @@ def timeline_ongoing(request):
 def timeline(request):
     start_param = request.query_params.get('start', None)
     end_param = request.query_params.get('end', None)
-    channels_param = request.query_params.get('channels', None)
+    channels_param = request.query_params.get('channels', [])
 
     start_date = datetime.strptime(start_param, '%Y-%m-%d').date()
     end_date = datetime.strptime(end_param, '%Y-%m-%d').date()
@@ -184,16 +182,18 @@ def timeline(request):
     ]
 
     # if an existing channel list is active and passed as an argument, start channels from that point
-    if channels_param:
-        tmpChannels = []
+    if len(channels_param) > 0:
+        tmp_channels = []
         existing_channels = channels_param.split(',')
         for c in existing_channels:
-            #TODO refactor this to try/catch
             if c:
-                tmpChannels.append(Activity.objects.get(id=c))
+                try:
+                    tmp_channels.append(Activity.objects.get(id=c))
+                except Activity.DoesNotExist:
+                    tmp_channels.append(None)
             else:
-                tmpChannels.append(None)
-        channels = tmpChannels
+                tmp_channels.append(None)   
+        channels = tmp_channels
 
     timeline_days = []
 
