@@ -162,6 +162,5 @@ AWS_STORAGE_BUCKET_NAME = "mttrchrdsapi"
 
 CORS_ALLOWED_ORIGINS = [
     "https://www.mttrchrds.com",
-    "http://localhost:1234",
+    "http://localhost:5173",
 ]
-
