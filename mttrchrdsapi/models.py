@@ -45,6 +45,10 @@ class Show(BaseModel):
         related_name='show',
         related_query_name='shows',
     )
+    rating = models.IntegerField(
+        default=1,
+        null=True,
+    )
 
     def __str__(self):
         return self.name
@@ -89,6 +93,10 @@ class Game(BaseModel):
         GameCategory,
         related_name='game',
         related_query_name='games',
+    )
+    rating = models.IntegerField(
+        default=1,
+        null=True,
     )
 
     def __str__(self):

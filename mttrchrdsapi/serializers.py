@@ -43,7 +43,7 @@ class ShowSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Show
-        fields = ['id', 'name', 'creator', 'imdb_id', 'image_url', 'thumbnail_url', 'categories']
+        fields = ['id', 'name', 'creator', 'imdb_id', 'image_url', 'thumbnail_url', 'categories', 'rating']
 
     def get_image_url(self, obj):
         if obj.image:
@@ -101,7 +101,7 @@ class GameSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Game
-        fields = ['id', 'name', 'creator', 'imdb_id', 'image_url', 'thumbnail_url', 'categories']
+        fields = ['id', 'name', 'creator', 'imdb_id', 'image_url', 'thumbnail_url', 'categories', 'rating']
 
     def get_image_url(self, obj):
         if obj.image:
