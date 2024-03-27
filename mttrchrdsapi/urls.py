@@ -12,16 +12,12 @@ schema_view = get_schema_view(
     patterns=urlpatterns_endpoints,
 )
 
-try:
-    urlpatterns = [
-        path('admin/', admin.site.urls),
-        path('api/', include(urlpatterns_endpoints)),
-        path('openapi', schema_view, name='openapi-schema'),
-        path('', TemplateView.as_view(
-            template_name='swagger-ui.html',
-            extra_context={'schema_url':'openapi-schema'}
-        ), name='swagger-ui'),
-    ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-except BaseException as error:
-    print('DEBUG: {}'.format(error))
-
+urlpatterns = [
+    path('admin/', admin.site.urls),
+    path('api/', include(urlpatterns_endpoints)),
+    path('openapi', schema_view, name='openapi-schema'),
+    path('', TemplateView.as_view(
+        template_name='swagger-ui.html',
+        extra_context={'schema_url':'openapi-schema'}
+    ), name='swagger-ui'),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
