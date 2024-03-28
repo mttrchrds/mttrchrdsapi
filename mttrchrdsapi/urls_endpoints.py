@@ -20,8 +20,8 @@ urlpatterns_endpoints = [
     path('game-categories/<int:id>', views.game_category_detail),
     path('activities/', views.activity_list),
     path('activities/<int:id>', views.activity_detail),
-    path('timeline-ongoing/', views.timeline_ongoing),
-    path('timeline/', views.timeline),
-    path('latest-shows/', views.latest_shows),
-    path('latest-games/', views.latest_games),
+    # path('timeline-ongoing/', views.timeline_ongoing),
+    # path('timeline/', views.timeline),
+    # path('latest-shows/', views.latest_shows),
+    # path('latest-games/', views.latest_games),
 ]
