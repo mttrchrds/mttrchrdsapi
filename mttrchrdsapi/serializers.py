@@ -126,7 +126,7 @@ class ActivitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Activity
-        fields = ['id', 'start_at', 'end_at', 'completed', 'show_activity', 'show_platform', 'game_activity', 'game_platform']
+        fields = ['id', 'start_at', 'end_at', 'completed', 'show_activity', 'show_platform', 'game_activity', 'game_platform', 'activity_type']
 
 
 class TimelineShowPlatformSerializer(serializers.ModelSerializer):
@@ -179,7 +179,7 @@ class TimelineActivitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Activity
-        fields = ['id', 'start_at', 'end_at', 'completed', 'show_activity', 'show_platform', 'game_activity', 'game_platform']
+        fields = ['id', 'start_at', 'end_at', 'completed', 'show_activity', 'show_platform', 'game_activity', 'game_platform', 'activity_type']
 
 class TimelineSerializer(serializers.Serializer):
     date = serializers.DateField()

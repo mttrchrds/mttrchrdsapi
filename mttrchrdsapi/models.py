@@ -101,6 +101,12 @@ class Game(BaseModel):
 
     def __str__(self):
         return self.name
+    
+
+class ActivityType(models.TextChoices):
+    GAME = 'GAME'
+    SHOW = 'SHOW'
+
 
 class Activity(BaseModel):
     start_at = models.DateField(null=False, blank=False)
@@ -138,6 +144,13 @@ class Activity(BaseModel):
         null=True,
         blank=True,
     )
+
+    @property
+    def activity_type(self):
+        if self.game_activity:
+            return ActivityType.GAME
+        if self.show_activity:
+            return ActivityType.SHOW
 
     def __str__(self):
         name = ''
