@@ -181,6 +181,7 @@ class TimelineActivitySerializer(serializers.ModelSerializer):
         model = Activity
         fields = ['id', 'start_at', 'end_at', 'completed', 'show_activity', 'show_platform', 'game_activity', 'game_platform', 'activity_type']
 
+
 class TimelineSerializer(serializers.Serializer):
     date = serializers.DateField()
     day = serializers.CharField(max_length=100)
@@ -189,3 +190,9 @@ class TimelineSerializer(serializers.Serializer):
     channels = serializers.ListField(
         child=TimelineActivitySerializer(read_only=True)
     )
+
+
+class StatsGameHoursSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField(max_length=100)
+    total = serializers.IntegerField()

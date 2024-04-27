@@ -24,4 +24,5 @@ urlpatterns_endpoints = [
     path('timeline/', views.timeline),
     path('latest-shows/', views.latest_shows),
     path('latest-games/', views.latest_games),
+    path('stats-game-days/', views.stats_game_days),
 ]

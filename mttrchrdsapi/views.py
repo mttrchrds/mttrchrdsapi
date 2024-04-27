@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from datetime import date, timedelta, datetime
 
 from .models import Show, ShowCreator, ShowPlatform, ShowCategory, Game, GameCreator, GamePlatform, GameCategory, Activity
-from .serializers import ShowSerializer, ShowCreatorSerializer, ShowPlatformSerializer, ShowCategorySerializer, GameSerializer, GameCreatorSerializer, GamePlatformSerializer, GameCategorySerializer, ActivitySerializer, TimelineSerializer
+from .serializers import ShowSerializer, ShowCreatorSerializer, ShowPlatformSerializer, ShowCategorySerializer, GameSerializer, GameCreatorSerializer, GamePlatformSerializer, GameCategorySerializer, ActivitySerializer, TimelineSerializer, StatsGameHoursSerializer
 
 @api_view(['GET'])
 def show_list(request):
@@ -250,3 +250,31 @@ def latest_games(request):
     latest_activities = Activity.objects.filter(game_activity__isnull=False).order_by('-end_at')[:3]
     serializer = ActivitySerializer(latest_activities, many=True)
     return Response(serializer.data)
+
+
+@api_view(['GET'])
+def stats_game_days(request):
+    limit_param = request.query_params.get('limit', 10)
+    game_activities = Activity.objects.filter(game_activity__isnull=False, end_at__isnull=False)
+    games = {}
+    stats = []
+    for activity in game_activities:
+        game_id = activity.game_activity.id
+        total_days = (activity.end_at - activity.start_at).days
+        if game_id in games:
+            games[game_id]['total_days'] = games[game_id]['total_days'] + total_days
+        else:
+            games[game_id] = {
+                'name': activity.game_activity.name,
+                'total_days': total_days,
+            }
+    for game_id in games.keys():
+        stats.append({
+            'id': game_id,
+            'name': games[game_id]['name'],
+            'total': games[game_id]['total_days'],
+        })
+    stats.sort(key=lambda x: x['total'], reverse=True)
+    serializer = StatsGameHoursSerializer(stats[:limit_param], many=True)
+    return Response(serializer.data)
+
