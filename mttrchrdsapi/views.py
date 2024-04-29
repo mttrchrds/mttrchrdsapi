@@ -275,6 +275,6 @@ def stats_game_days(request):
             'total': games[game_id]['total_days'],
         })
     stats.sort(key=lambda x: x['total'], reverse=True)
-    serializer = StatsGameHoursSerializer(stats[:limit_param], many=True)
+    serializer = StatsGameHoursSerializer(stats[:int(limit_param)], many=True)
     return Response(serializer.data)
 
