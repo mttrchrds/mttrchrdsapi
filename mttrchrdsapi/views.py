@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from datetime import date, timedelta, datetime
 
 from .models import Show, ShowCreator, ShowPlatform, ShowCategory, Game, GameCreator, GamePlatform, GameCategory, Activity
-from .serializers import ShowSerializer, ShowCreatorSerializer, ShowPlatformSerializer, ShowCategorySerializer, GameSerializer, GameCreatorSerializer, GamePlatformSerializer, GameCategorySerializer, ActivitySerializer, TimelineSerializer, StatsGameHoursSerializer
+from .serializers import ShowSerializer, ShowCreatorSerializer, ShowPlatformSerializer, ShowCategorySerializer, GameSerializer, GameCreatorSerializer, GamePlatformSerializer, GameCategorySerializer, ActivitySerializer, TimelineSerializer, StatsGameHoursSerializer, StatsShowPlatformsYearsSerializer
 
 @api_view(['GET'])
 def show_list(request):
@@ -276,5 +276,43 @@ def stats_game_days(request):
         })
     stats.sort(key=lambda x: x['total'], reverse=True)
     serializer = StatsGameHoursSerializer(stats[:int(limit_param)], many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def stats_show_platforms_years(request):
+    show_activities_all = Activity.objects.filter(show_activity__isnull=False, end_at__isnull=False)
+    show_activities_2021 = Activity.objects.filter(show_activity__isnull=False, end_at__isnull=False, start_at__gte="2021-01-01", start_at__lte="2021-12-31")
+    show_platforms = ShowPlatform.objects.all().exclude(name="Warhammer TV")
+    stats = [
+        {
+            'year': '2021',
+            'data': []
+        },
+        {
+            'year': '2022',
+            'data': []
+        },
+        {
+            'year': '2023',
+            'data': []
+        },
+        {
+            'year': '2024',
+            'data': []
+        },
+    ]
+    print('PLATFORMS', show_platforms)
+    for stats_item in stats:
+        for platform in show_platforms:
+            start_date = stats_item['year'] + '-01-01'
+            end_date = stats_item['year'] + '-12-31'
+            stats_item['data'].append({
+                'id': platform.id,
+                'name': platform.name,
+                'total': Activity.objects.filter(show_activity__isnull=False, end_at__isnull=False, start_at__gte=start_date, start_at__lte=end_date, show_platform=platform).count()
+            })
+    print('STATS', stats)
+    serializer = StatsShowPlatformsYearsSerializer(stats, many=True)
     return Response(serializer.data)
 

@@ -25,4 +25,5 @@ urlpatterns_endpoints = [
     path('latest-shows/', views.latest_shows),
     path('latest-games/', views.latest_games),
     path('stats-game-days/', views.stats_game_days),
+    path('stats-show-platforms-years/', views.stats_show_platforms_years),
 ]

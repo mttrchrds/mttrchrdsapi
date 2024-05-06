@@ -196,3 +196,16 @@ class StatsGameHoursSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     name = serializers.CharField(max_length=100)
     total = serializers.IntegerField()
+
+
+class StatsShowPlatformsYearsPlatformsSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    name = serializers.CharField(max_length=100)
+    total = serializers.IntegerField()
+
+
+class StatsShowPlatformsYearsSerializer(serializers.Serializer):
+    year = serializers.CharField(max_length=100)
+    data = serializers.ListField(
+        child=StatsShowPlatformsYearsPlatformsSerializer(read_only=True)
+    )
