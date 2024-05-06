@@ -281,38 +281,30 @@ def stats_game_days(request):
 
 @api_view(['GET'])
 def stats_show_platforms_years(request):
-    show_activities_all = Activity.objects.filter(show_activity__isnull=False, end_at__isnull=False)
-    show_activities_2021 = Activity.objects.filter(show_activity__isnull=False, end_at__isnull=False, start_at__gte="2021-01-01", start_at__lte="2021-12-31")
     show_platforms = ShowPlatform.objects.all().exclude(name="Warhammer TV")
-    stats = [
-        {
-            'year': '2021',
-            'data': []
-        },
-        {
-            'year': '2022',
-            'data': []
-        },
-        {
-            'year': '2023',
-            'data': []
-        },
-        {
-            'year': '2024',
-            'data': []
-        },
-    ]
-    print('PLATFORMS', show_platforms)
-    for stats_item in stats:
-        for platform in show_platforms:
-            start_date = stats_item['year'] + '-01-01'
-            end_date = stats_item['year'] + '-12-31'
-            stats_item['data'].append({
-                'id': platform.id,
-                'name': platform.name,
-                'total': Activity.objects.filter(show_activity__isnull=False, end_at__isnull=False, start_at__gte=start_date, start_at__lte=end_date, show_platform=platform).count()
+    years = ['2021','2022','2023','2024']
+    highest_value = 0
+    stats = []
+    for platform in show_platforms:
+        item = {
+            'platform': platform.name,
+            'years': [],
+        }
+        for year in years:
+            start_date = year + '-01-01'
+            end_date = year + '-12-31'
+            total = Activity.objects.filter(show_activity__isnull=False, end_at__isnull=False, start_at__gte=start_date, start_at__lte=end_date, show_platform=platform).count()
+            if total > highest_value:
+                highest_value = total
+            item['years'].append({
+                'name': year,
+                'total': total,
             })
-    print('STATS', stats)
-    serializer = StatsShowPlatformsYearsSerializer(stats, many=True)
+        stats.append(item)
+    payload = {
+        'highest': highest_value,
+        'data': stats,
+    }
+    serializer = StatsShowPlatformsYearsSerializer(payload)
     return Response(serializer.data)
 

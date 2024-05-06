@@ -198,14 +198,20 @@ class StatsGameHoursSerializer(serializers.Serializer):
     total = serializers.IntegerField()
 
 
-class StatsShowPlatformsYearsPlatformsSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
+class StatsShowPlatformsYearsPlatformsYearSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=100)
     total = serializers.IntegerField()
 
 
+class StatsShowPlatformsYearsPlatformsSerializer(serializers.Serializer):
+    platform = serializers.CharField(max_length=100)
+    years = serializers.ListField(
+        child=StatsShowPlatformsYearsPlatformsYearSerializer(read_only=True)
+    )
+
+
 class StatsShowPlatformsYearsSerializer(serializers.Serializer):
-    year = serializers.CharField(max_length=100)
+    highest = serializers.IntegerField()
     data = serializers.ListField(
         child=StatsShowPlatformsYearsPlatformsSerializer(read_only=True)
     )
