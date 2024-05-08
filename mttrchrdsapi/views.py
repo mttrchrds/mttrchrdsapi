@@ -302,6 +302,7 @@ def stats_show_platforms_years(request):
             })
         stats.append(item)
     payload = {
+        'years': years,
         'highest': highest_value,
         'data': stats,
     }

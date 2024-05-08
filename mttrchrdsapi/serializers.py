@@ -211,6 +211,7 @@ class StatsShowPlatformsYearsPlatformsSerializer(serializers.Serializer):
 
 
 class StatsShowPlatformsYearsSerializer(serializers.Serializer):
+    years = data = serializers.ListField(child=serializers.CharField())
     highest = serializers.IntegerField()
     data = serializers.ListField(
         child=StatsShowPlatformsYearsPlatformsSerializer(read_only=True)
