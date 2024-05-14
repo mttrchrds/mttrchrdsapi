@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from datetime import date, timedelta, datetime
 
 from .models import Show, ShowCreator, ShowPlatform, ShowCategory, Game, GameCreator, GamePlatform, GameCategory, Activity
-from .serializers import ShowSerializer, ShowCreatorSerializer, ShowPlatformSerializer, ShowCategorySerializer, GameSerializer, GameCreatorSerializer, GamePlatformSerializer, GameCategorySerializer, ActivitySerializer, TimelineSerializer, StatsGameHoursSerializer, StatsShowPlatformsYearsSerializer
+from .serializers import ShowSerializer, ShowCreatorSerializer, ShowPlatformSerializer, ShowCategorySerializer, GameSerializer, GameCreatorSerializer, GamePlatformSerializer, GameCategorySerializer, ActivitySerializer, TimelineSerializer, StatsGameHoursSerializer, StatsShowPlatformsYearsSerializer, StatsGameCategoriesSerializer
 
 @api_view(['GET'])
 def show_list(request):
@@ -309,3 +309,26 @@ def stats_show_platforms_years(request):
     serializer = StatsShowPlatformsYearsSerializer(payload)
     return Response(serializer.data)
 
+
+@api_view(['GET'])
+def stats_game_categories(request):
+    game_activities = Activity.objects.filter(game_activity__isnull=False, end_at__isnull=False)
+    categories_stats = {}
+    for activity in game_activities:
+        for cat in activity.game_activity.categories.all():
+            if cat.id in categories_stats:
+                categories_stats[cat.id]['total'] = categories_stats[cat.id]['total'] + 1
+            else:
+                categories_stats[cat.id] = {
+                    'name': cat.name,
+                    'total': 1
+                }
+    stats_parsed = []
+    for category_id in categories_stats.keys():
+        stats_parsed.append({
+            'id': category_id,
+            'name': categories_stats[category_id]['name'],
+            'total': categories_stats[category_id]['total'],
+        })
+    serializer = StatsGameCategoriesSerializer(stats_parsed, many=True)
+    return Response(serializer.data)
