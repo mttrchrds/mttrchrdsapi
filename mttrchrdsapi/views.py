@@ -281,7 +281,7 @@ def stats_game_days(request):
 
 @api_view(['GET'])
 def stats_show_platforms_years(request):
-    show_platforms = ShowPlatform.objects.all().exclude(name="Warhammer TV")
+    show_platforms = ShowPlatform.objects.all().exclude(name__in=["Warhammer TV","ITV X","Channel 4","Blu-ray"])
     years = ['2021','2022','2023','2024']
     highest_value = 0
     stats = []
