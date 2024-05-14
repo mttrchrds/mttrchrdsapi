@@ -314,8 +314,14 @@ def stats_show_platforms_years(request):
 def stats_game_categories(request):
     game_activities = Activity.objects.filter(game_activity__isnull=False, end_at__isnull=False)
     categories_stats = {}
+    unique_games = {}
+    stats_parsed = []
     for activity in game_activities:
-        for cat in activity.game_activity.categories.all():
+        game_id = activity.game_activity.id
+        if not game_id in unique_games:
+            unique_games[game_id] = activity.game_activity.categories
+    for game_id in unique_games.keys():
+        for cat in unique_games[game_id].all():
             if cat.id in categories_stats:
                 categories_stats[cat.id]['total'] = categories_stats[cat.id]['total'] + 1
             else:
@@ -323,7 +329,6 @@ def stats_game_categories(request):
                     'name': cat.name,
                     'total': 1
                 }
-    stats_parsed = []
     for category_id in categories_stats.keys():
         stats_parsed.append({
             'id': category_id,
