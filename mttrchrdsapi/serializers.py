@@ -227,8 +227,14 @@ class StatsActivityMonthsYearSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=100)
     total = serializers.IntegerField()
 
-class StatsActivityMonthsSerializer(serializers.Serializer):
+class StatsActivityMonthsDataSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=100)
     years = serializers.ListField(
         child=StatsActivityMonthsYearSerializer(read_only=True)
+    )
+
+class StatsActivityMonthsSerializer(serializers.Serializer):
+    years = data = serializers.ListField(child=serializers.CharField())
+    data = serializers.ListField(
+        child=StatsActivityMonthsDataSerializer(read_only=True)
     )

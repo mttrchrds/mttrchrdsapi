@@ -364,5 +364,8 @@ def stats_activity_months(request):
             payload['years'].append(year_payload)
         data.append(payload)
 
-    serializer = StatsActivityMonthsSerializer(data, many=True)
+    serializer = StatsActivityMonthsSerializer({
+        'years': years,
+        'data': data,
+    })
     return Response(serializer.data)
