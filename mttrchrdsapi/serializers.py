@@ -222,3 +222,13 @@ class StatsGameCategoriesSerializer(serializers.Serializer):
     id = serializers.IntegerField()
     name = serializers.CharField(max_length=100)
     total = serializers.IntegerField()
+
+class StatsActivityMonthsYearSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=100)
+    total = serializers.IntegerField()
+
+class StatsActivityMonthsSerializer(serializers.Serializer):
+    name = serializers.CharField(max_length=100)
+    years = serializers.ListField(
+        child=StatsActivityMonthsYearSerializer(read_only=True)
+    )

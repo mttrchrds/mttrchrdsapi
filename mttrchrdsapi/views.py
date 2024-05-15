@@ -2,9 +2,10 @@ from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from datetime import date, timedelta, datetime
+import calendar
 
 from .models import Show, ShowCreator, ShowPlatform, ShowCategory, Game, GameCreator, GamePlatform, GameCategory, Activity
-from .serializers import ShowSerializer, ShowCreatorSerializer, ShowPlatformSerializer, ShowCategorySerializer, GameSerializer, GameCreatorSerializer, GamePlatformSerializer, GameCategorySerializer, ActivitySerializer, TimelineSerializer, StatsGameHoursSerializer, StatsShowPlatformsYearsSerializer, StatsGameCategoriesSerializer
+from .serializers import ShowSerializer, ShowCreatorSerializer, ShowPlatformSerializer, ShowCategorySerializer, GameSerializer, GameCreatorSerializer, GamePlatformSerializer, GameCategorySerializer, ActivitySerializer, TimelineSerializer, StatsGameHoursSerializer, StatsShowPlatformsYearsSerializer, StatsGameCategoriesSerializer, StatsActivityMonthsSerializer
 
 @api_view(['GET'])
 def show_list(request):
@@ -336,4 +337,32 @@ def stats_game_categories(request):
             'total': categories_stats[category_id]['total'],
         })
     serializer = StatsGameCategoriesSerializer(stats_parsed, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def stats_activity_months(request):
+    years = ['2021','2022','2023','2024']
+    data = []
+    for month_idx in range(1, 13):
+        payload = {
+            'name': calendar.month_abbr[month_idx],
+            'years': []
+        }
+        for year in years:
+            month_range = calendar.monthrange(int(year), month_idx)
+            two_digit_month = f"{month_idx:02d}"
+            month_end_day = month_range[1]
+            two_digit_month_end_day = f"{month_end_day:02d}"
+            end_of_month = year + '-' + two_digit_month + '-' + two_digit_month_end_day
+            start_of_month = year + '-' + two_digit_month + '-01'
+            monthly_activity_total = Activity.objects.filter(start_at__lte=end_of_month, end_at__gte=start_of_month).count()
+            year_payload = {
+                'name': year,
+                'total': monthly_activity_total
+            }
+            payload['years'].append(year_payload)
+        data.append(payload)
+
+    serializer = StatsActivityMonthsSerializer(data, many=True)
     return Response(serializer.data)
