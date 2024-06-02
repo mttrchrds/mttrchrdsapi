@@ -40,10 +40,12 @@ class ShowSerializer(serializers.ModelSerializer):
     categories = ShowCategorySerializer(read_only=True, many=True)
     image_url = serializers.SerializerMethodField()
     thumbnail_url = serializers.SerializerMethodField()
+    image_width = serializers.SerializerMethodField()
+    image_height = serializers.SerializerMethodField()
 
     class Meta:
         model = Show
-        fields = ['id', 'name', 'creator', 'imdb_id', 'image_url', 'thumbnail_url', 'categories', 'rating']
+        fields = ['id', 'name', 'creator', 'imdb_id', 'image_url', 'thumbnail_url', 'categories', 'rating', 'image_width', 'image_height']
 
     def get_image_url(self, obj):
         if obj.image:
@@ -57,6 +59,16 @@ class ShowSerializer(serializers.ModelSerializer):
             if settings.DEBUG:
                 return settings.BASE_DOMAIN + obj.thumbnail.url
             return obj.thumbnail.url
+        return ''
+    
+    def get_image_width(self, obj):
+        if obj.image:
+            return obj.image.width
+        return ''
+    
+    def get_image_height(self, obj):
+        if obj.image:
+            return obj.image.height
         return ''
     
 
@@ -98,10 +110,12 @@ class GameSerializer(serializers.ModelSerializer):
     categories = GameCategorySerializer(read_only=True, many=True)
     image_url = serializers.SerializerMethodField()
     thumbnail_url = serializers.SerializerMethodField()
+    image_width = serializers.SerializerMethodField()
+    image_height = serializers.SerializerMethodField()
 
     class Meta:
         model = Game
-        fields = ['id', 'name', 'creator', 'imdb_id', 'image_url', 'thumbnail_url', 'categories', 'rating']
+        fields = ['id', 'name', 'creator', 'imdb_id', 'image_url', 'thumbnail_url', 'categories', 'rating', 'image_width', 'image_height']
 
     def get_image_url(self, obj):
         if obj.image:
@@ -115,6 +129,16 @@ class GameSerializer(serializers.ModelSerializer):
             if settings.DEBUG:
                 return settings.BASE_DOMAIN + obj.thumbnail.url
             return obj.thumbnail.url
+        return ''
+    
+    def get_image_width(self, obj):
+        if obj.image:
+            return obj.image.width
+        return ''
+    
+    def get_image_height(self, obj):
+        if obj.image:
+            return obj.image.height
         return ''
     
 
